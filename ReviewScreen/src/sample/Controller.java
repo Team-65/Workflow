@@ -52,12 +52,13 @@ public class Controller{
         nameApp.setText("TEST");
     }*/
 
-    @FXML
-    void setGoBack(){
-        //primaryStage.setScene(scene1); //scene 1 here is the inbox
-        //should switch to inbox controller from here
-    }
-
+    /**
+     * Approves an application. This function is triggered on the "approve"
+     * button push. It sets the status of the application to "Approved" and
+     * removes it from the inbox.
+     *
+     * @throws SQLException
+     */
     @FXML
     void setApprove() throws SQLException{
         Connection conn=DBConnection.getDBConnection().getConnection();
@@ -74,6 +75,13 @@ public class Controller{
         addAllUnassigned();
     }
 
+    /**
+     * SetReject is triggered on the "reject" button push.
+     * On that button press, it updates the status of the
+     * application to "Rejected" and removes it from the inbox.
+     *
+     * @throws SQLException
+     */
     @FXML
     void setReject() throws SQLException{
         Connection conn=DBConnection.getDBConnection().getConnection();
@@ -90,7 +98,14 @@ public class Controller{
         addAllUnassigned();
     }
 
-
+    /**
+     * getUnassigForms retrieves a list of the IDs of the unassigned forms
+     * in the database.
+     *
+     * @return Returns an ArrayList of strings representing the IDs of the unassigned forms.
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
 
     //creates a list of unassigned applications
     private static ArrayList<String> getUnassigForms() throws ClassNotFoundException, SQLException {
@@ -112,8 +127,13 @@ public class Controller{
         return unassforms;
     }
 
-    //goes through a list of unassigned applications
-    //finds worker with the least amount of applications
+    /**
+     * getSmallWorker returns the government worker with the smallest inbox.
+     *
+     * @return Returns the government account with the fewest applications in its inbox.
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     Worker getSmallWorker() throws ClassNotFoundException, SQLException{//TODO: find out fields + name for govt. worker
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
@@ -127,9 +147,14 @@ public class Controller{
     }
 
 
-    //adds an application to a worker
-    //alters the status of the application to assigned
-    //pushes the changes to the worker and the application
+    /**
+     * Assigns an application to a government account's inbox.
+     *
+     * @param w Government account to assign an application to.
+     * @param apptoassgn String representing the ID of the application to be assigned.
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     void addToInbox(Worker w, String apptoassgn) throws ClassNotFoundException, SQLException{
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
@@ -143,6 +168,12 @@ public class Controller{
         stm.executeUpdate(sql);
     }
 
+    /**
+     * Gets a list of unassigned forms then assigns them to government account inboxes.
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     //adds all the unassigned forms to workers inboxes
     void addAllUnassigned() throws ClassNotFoundException, SQLException{
         ArrayList<String> unassigForms = getUnassigForms();
