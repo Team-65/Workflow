@@ -73,17 +73,43 @@ public class Controller{
         //use SQL to set status to rejected; append comments
     }
 
-    void assignApp(){
-        Statement stmt = null;
-        ResultSet unassApp = SELECT FIRST FROM ALCOHOL WHERE ALCOHOL.STATUS = '+"unassigned"+'
-        ResultSet smallWorker = stmt.executeQuery("SELECT AID.MIN(CNT(FID)) FROM REVIEWS GROUP BY AID");
-        smallWorker.addToInbox(unassApp);
+
+
+    //creates a list of unassigned applications
+    private static ArrayList<CForms> unassigForms(/*Account account <- is this the data type we want*/) throws ClassNotFoundException, SQLException {
+        Connection conn=DBConnection.getDBConnection().getConnection();
+        Statement stm;
+        stm = conn.createStatement();
+        String sql; // Use Select _ from _ Where _ format and set this statement = sql
+        ResultSet rst;
+        rst = stm.executeQuery(sql);
+        ArrayList<Forms> unassforms = new ArrayList<>();
+        while (rst.next()) {
+            // Create form object
+            // add the object to List
+            ResultSet unassApp = stm.executeQuery("SELECT FIRST FROM ALCOHOL WHERE ALCOHOL.STATUS = '+"unassigned"+'");
+        }
+        return unassforms;
     }
 
-    void addToInbox(Worker w, Application apptoassgn){
+    //goes through a list of unassigned applications
+    //finds worker with the least amount of applications
+    void assignApp(){
+        for (i = 0; i <= unassigForms().size(); i++){
+            Statement stmt = null;
+            ResultSet smallWorker = stmt.executeQuery("SELECT AID.MIN(CNT(FID)) FROM REVIEWS GROUP BY AID");
+            addToInbox(smallWorker, unassigForms[i]);
+        }
+    }
+
+
+    //adds an application to a worker
+    //alters the status of the application to assigned
+    //pushes the changes to the worker and the application
+    void addToInbox(Resultset worker, Application apptoassgn){
         //add the unassigned app to worker
-        w.Inbox.add(apptoassgn);
-        //alter status of application to assigned
+        worker.Inbox.add(apptoassgn); //?? something like this but idk in SQL
+        //alter status of application to assigned and push changes to application
         SELECT FROM ALCOHOL WHERE ALCOHOL.FID = apptoassgn.fid;
         apptoassgn.status = "assigned";
         UPDATE SELECTED App;
