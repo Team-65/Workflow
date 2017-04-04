@@ -98,7 +98,7 @@ public class Controller{
 
     //goes through a list of unassigned applications
     //finds worker with the least amount of applications
-    void getsmallWorker(ArrayList<CForms> unassigForms) throws ClassNotFoundException, SQLException{
+    worker getsmallWorker(ArrayList<CForms> unassigForms) throws ClassNotFoundException, SQLException{
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
         stm = conn.createStatement();
