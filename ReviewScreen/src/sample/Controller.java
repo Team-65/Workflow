@@ -69,8 +69,9 @@ public class Controller{
         String sql = "UPDATE ALCOHOL SET status = 'approved', comments = 'comments'  WHERE id = 'apptoassgn'";
         stm.executeUpdate(sql);
         //update inbox for worker
-        sql = "UPDATE REVIEWS SET inbox.remove(apptoassgn) WHERE id = w.id";
+        sql = "UPDATE REVIEWS SET inbox.remove(apptoassgn.indexOf()) WHERE id = w.id";
         stm.executeUpdate(sql);
+        addAllUnassigned();
     }
 
     @FXML
@@ -84,8 +85,9 @@ public class Controller{
         String sql = "UPDATE ALCOHOL SET status = 'rejected', comments = 'comments' WHERE id = 'apptoassgn'";
         stm.executeUpdate(sql);
         //update inbox for worker
-        sql = "UPDATE REVIEWS SET inbox.remove(apptoassgn) WHERE id = w.id";
+        sql = "UPDATE REVIEWS SET inbox.remove(apptoassgn.indexOf()) WHERE id = w.id";
         stm.executeUpdate(sql);
+        addAllUnassigned();
     }
 
 
@@ -103,7 +105,8 @@ public class Controller{
         while(unassAlc.next()){
             int i = 1;
             while(i <= columnCount){
-                unassforms.add(unassAlc.getString('id'));//TODO: replace with actual column name
+                unassforms.add(unassAlc.getString((i-1),'id'));//TODO: replace with actual column name
+                i++;
             }
         }
         return unassforms;
@@ -135,12 +138,13 @@ public class Controller{
         String sql = "UPDATE ALCOHOL SET status = 'assigned' WHERE id = apptoassgn";
         stm.executeUpdate(sql);
         //update inbox for worker
-        sql = "UPDATE REVIEWS SET inbox.add(apptoassgn) WHERE id = w.id";
+        index = w.inbox.size();
+        sql = "UPDATE REVIEWS SET inbox.add(index+1, apptoassgn) WHERE id = w.id";
         stm.executeUpdate(sql);
     }
 
     //adds all the unassigned forms to workers inboxes
-    void addAllUnassigned(){
+    void addAllUnassigned() throws ClassNotFoundException, SQLException{
         ArrayList<String> unassigForms = getUnassigForms();
         for (int i = 0; i <= unassigForms.size(); i++) {
             addToInbox(getSmallWorker(), unassigForms.get(i));
