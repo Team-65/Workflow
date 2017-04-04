@@ -141,9 +141,12 @@ public class Controller{
 
     //adds all the unassigned forms to workers inboxes
     void addAllUnassigned(){
-        while (getUnassigForms() != null) {
+        ArrayList<String> unassigForms = getUnassigForms();
+        while (unassigForms != null) {
+            int i = 0;
             Worker smallestInbox = getsmallWorker(getUnassigForms());
-            addToInbox(smallestWorker);
+            addToInbox(smallestWorker, unassigForms.get(i));
+            i++;
         }
     }
 
