@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import sun.java2d.pipe.AlphaPaintPipe;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controller{
@@ -60,12 +61,13 @@ public class Controller{
     @FXML
     void setApprove() throws SQLException{
         Statement stmt = null;
-        ResultSet rset = stmt.executeQuery("SELECT AID, MIN(CNT(FID))");
+        ResultSet rset = stmt.executeQuery("SELECT AID, MIN(CNT(FID))");//select worker with smallest inbox
         String status = rset.getString("STATUS");
         status = "Approved";
         int uRows = stmt.executeUpdate("INSERT INTO")
         //What I want to do: update the active application to approve
         //Find correct app in DB, Update Status Field, Update Comments
+        //remove from worker inbox
     }
 
     @FXML
@@ -76,28 +78,34 @@ public class Controller{
 
 
     //creates a list of unassigned applications
-    private static ArrayList<CForms> unassigForms(/*Account account <- is this the data type we want*/) throws ClassNotFoundException, SQLException {
+    private static ArrayList<String> getunassigForms(int aid) throws ClassNotFoundException, SQLException {
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
         stm = conn.createStatement();
-        String sql; // Use Select _ from _ Where _ format and set this statement = sql
-        ResultSet rst;
-        rst = stm.executeQuery(sql);
-        ArrayList<Forms> unassforms = new ArrayList<>();
-        while (rst.next()) {
-            // Create form object
-            // add the object to List
-            ResultSet unassApp = stm.executeQuery("SELECT FIRST FROM ALCOHOL WHERE ALCOHOL.STATUS = '+"unassigned"+'");
+        String sql = "SELECT * FROM ALCOHOL WHERE ALCOHOL.STATUS = 'Unassigned'"; // Use Select _ from _ Where _ format and set this statement = sql
+        ArrayList<String> unassforms = new ArrayList<>();
+        ResultSet unassAlc = stm.executeQuery(sql);
+        ResultSetMetaData rsmd = unassAlc.getMetaData();
+        int columnCount = rsmd.getColumnCount();
+        while(unassAlc.next()){
+            int i = 1;
+            while(i <= columnCount){
+                unassforms.add(unassAlc.getString('id'));//TODO: replace with actual column name
+            }
         }
         return unassforms;
     }
 
     //goes through a list of unassigned applications
     //finds worker with the least amount of applications
-    void assignApp(){
+    void getsmallWorker(ArrayList<CForms> unassigForms) throws ClassNotFoundException, SQLException{
+        Connection conn=DBConnection.getDBConnection().getConnection();
+        Statement stm;
+        stm = conn.createStatement();
+        String sql = "";
         for (i = 0; i <= unassigForms().size(); i++){
-            Statement stmt = null;
-            ResultSet smallWorker = stmt.executeQuery("SELECT AID.MIN(CNT(FID)) FROM REVIEWS GROUP BY AID");
+            Statement stm = null;
+            ResultSet smallWorker = stm.executeQuery("SELECT AID.MIN(CNT(FID)) FROM REVIEWS");
             addToInbox(smallWorker, unassigForms[i]);
         }
     }
@@ -106,7 +114,7 @@ public class Controller{
     //adds an application to a worker
     //alters the status of the application to assigned
     //pushes the changes to the worker and the application
-    void addToInbox(Resultset worker, Application apptoassgn){
+    void addToInbox(ResultSet worker, Application apptoassgn){
         //add the unassigned app to worker
         worker.Inbox.add(apptoassgn); //?? something like this but idk in SQL
         //alter status of application to assigned and push changes to application
