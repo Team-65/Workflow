@@ -60,19 +60,32 @@ public class Controller{
 
     @FXML
     void setApprove() throws SQLException{
-        Statement stmt = null;
-        ResultSet rset = stmt.executeQuery("SELECT AID, MIN(CNT(FID))");//select worker with smallest inbox
-        String status = rset.getString("STATUS");
-        status = "Approved";
-        int uRows = stmt.executeUpdate("INSERT INTO")
-        //What I want to do: update the active application to approve
-        //Find correct app in DB, Update Status Field, Update Comments
-        //remove from worker inbox
+        Connection conn=DBConnection.getDBConnection().getConnection();
+        Statement stm;
+        stm = conn.createStatement();
+        //get comments
+        String comments = commentsField.getText();
+        //update alcohol status
+        String sql = "UPDATE ALCOHOL SET status = 'approved', comments = 'comments'  WHERE id = 'apptoassgn'";
+        stm.executeUpdate(sql);
+        //update inbox for worker
+        sql = "UPDATE REVIEWS SET inbox.remove(apptoassgn) WHERE id = w.id";
+        stm.executeUpdate(sql);
     }
 
     @FXML
     void setReject() throws SQLException{
-        //use SQL to set status to rejected; append comments
+        Connection conn=DBConnection.getDBConnection().getConnection();
+        Statement stm;
+        stm = conn.createStatement();
+        //get comments
+        String comments = commentsField.getText();
+        //update alcohol status
+        String sql = "UPDATE ALCOHOL SET status = 'rejected', comments = 'comments' WHERE id = 'apptoassgn'";
+        stm.executeUpdate(sql);
+        //update inbox for worker
+        sql = "UPDATE REVIEWS SET inbox.remove(apptoassgn) WHERE id = w.id";
+        stm.executeUpdate(sql);
     }
 
 
