@@ -96,9 +96,8 @@ public class Controller{
         return unassforms;
     }
 
-    //goes through a list of unassigned applications
-    //finds worker with the least amount of applications
-    worker getsmallWorker(ArrayList<CForms> unassigForms) throws ClassNotFoundException, SQLException{
+    //finds the worker with the least amount of applications in their inbox and returns that worker
+    Worker getsmallWorker(ArrayList<CForms> unassigForms) throws ClassNotFoundException, SQLException{
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
         stm = conn.createStatement();
@@ -116,7 +115,7 @@ public class Controller{
     //pushes the changes to the worker and the application
     void addToInbox(ResultSet worker, Application apptoassgn){
         //add the unassigned app to worker
-        worker.Inbox.add(apptoassgn); //?? something like this but idk in SQL
+        Worker.addToInbox(apptoassgn); //?? something like this but idk in SQL
         //alter status of application to assigned and push changes to application
         SELECT FROM ALCOHOL WHERE ALCOHOL.FID = apptoassgn.fid;
         apptoassgn.status = "assigned";
