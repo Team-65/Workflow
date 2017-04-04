@@ -111,7 +111,7 @@ public class Controller{
 
     //goes through a list of unassigned applications
     //finds worker with the least amount of applications
-    Worker getsmallWorker() throws ClassNotFoundException, SQLException{//TODO: find out fields + name for govt. worker
+    Worker getSmallWorker() throws ClassNotFoundException, SQLException{//TODO: find out fields + name for govt. worker
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
         stm = conn.createStatement();
@@ -132,7 +132,7 @@ public class Controller{
         Statement stm;
         stm = conn.createStatement();
         //update alcohol status
-        String sql = "UPDATE ALCOHOL SET status = 'assigned' WHERE id = 'apptoassgn'";
+        String sql = "UPDATE ALCOHOL SET status = 'assigned' WHERE id = apptoassgn";
         stm.executeUpdate(sql);
         //update inbox for worker
         sql = "UPDATE REVIEWS SET inbox.add(apptoassgn) WHERE id = w.id";
@@ -142,11 +142,8 @@ public class Controller{
     //adds all the unassigned forms to workers inboxes
     void addAllUnassigned(){
         ArrayList<String> unassigForms = getUnassigForms();
-        while (unassigForms != null) {
-            int i = 0;
-            Worker smallestInbox = getsmallWorker(getUnassigForms());
-            addToInbox(smallestWorker, unassigForms.get(i));
-            i++;
+        for (int i = 0; i <= unassigForms.size(); i++) {
+            addToInbox(getSmallWorker(), unassigForms.get(i));
         }
     }
 
