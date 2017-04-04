@@ -114,16 +114,16 @@ public class Controller{
     //adds an application to a worker
     //alters the status of the application to assigned
     //pushes the changes to the worker and the application
-    void addToInbox(Worker w, Application apptoassgn){
-        //add the unassigned app to worker
-        w.addToInbox(apptoassgn);
-        //alter status of application to assigned and push changes to application
-        SELECT FROM ALCOHOL WHERE ALCOHOL.FID = apptoassgn.fid;
-        apptoassgn.status = "assigned";
-        UPDATE SELECTED App;
-        SELECT FROM WORKERS WHERE WORKER.AID = w.aid;
-        UPDATE SELECTED WORKER;
-        //push changes to worker
+    void addToInbox(Worker w, String apptoassgn) throws ClassNotFoundException, SQLException{
+        Connection conn=DBConnection.getDBConnection().getConnection();
+        Statement stm;
+        stm = conn.createStatement();
+        //update alcohol status
+        String sql = "UPDATE ALCOHOL SET status = 'assigned' WHERE id = 'apptoassgn'";
+        stm.executeUpdate(sql);
+        //update inbox for worker
+        sql = "UPDATE REVIEWS SET inbox.add(apptoassgn) WHERE id = w.id";
+        stm.executeUpdate(sql);
     }
 
     //adds all the unassigned forms to workers inboxes
