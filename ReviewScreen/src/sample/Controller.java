@@ -98,23 +98,23 @@ public class Controller{
 
     //goes through a list of unassigned applications
     //finds worker with the least amount of applications
-    worker getsmallWorker(ArrayList<CForms> unassigForms) throws ClassNotFoundException, SQLException{
+    Worker getsmallWorker() throws ClassNotFoundException, SQLException{//TODO: find out fields + name for govt. worker
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
         stm = conn.createStatement();
-        String sql = "";
-        for (i = 0; i <= unassigForms().size(); i++){
-            Statement stm = null;
-            ResultSet smallWorker = stm.executeQuery("SELECT AID.MIN(CNT(FID)) FROM REVIEWS");
-            addToInbox(smallWorker, unassigForms[i]);
-        }
+        String sql = "SELECT AID.MIN(CNT(FID)) FROM REVIEWS";
+        ResultSet smallWorker = stm.executeQuery(sql);
+        Worker worker = Worker();
+        worker.aid = smallWorker.getString('id');//TODO: replace w/ actual syntax for this
+        worker.inbox = smallWorker.getArray('inbox');//TODO: Find actual fields
+        return worker;
     }
 
 
     //adds an application to a worker
     //alters the status of the application to assigned
     //pushes the changes to the worker and the application
-    void addToInbox(ResultSet worker, Application apptoassgn){
+    void addToInbox(Worker worker, Application apptoassgn){
         //add the unassigned app to worker
         worker.Inbox.add(apptoassgn); //?? something like this but idk in SQL
         //alter status of application to assigned and push changes to application
