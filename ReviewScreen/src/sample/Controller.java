@@ -78,7 +78,7 @@ public class Controller{
 
 
     //creates a list of unassigned applications
-    private static ArrayList<String> getunassigForms() throws ClassNotFoundException, SQLException {
+    private static ArrayList<String> getUnassigForms() throws ClassNotFoundException, SQLException {
         Connection conn=DBConnection.getDBConnection().getConnection();
         Statement stm;
         stm = conn.createStatement();
@@ -128,8 +128,10 @@ public class Controller{
 
     //adds all the unassigned forms to workers inboxes
     void addAllUnassigned(){
-        Worker smallestInbox = getsmallWorker()
-        addToInbox();
+        while (getUnassigForms() != null) {
+            Worker smallestInbox = getsmallWorker(getUnassigForms());
+            addToInbox(smallestWorker);
+        }
     }
 
 }
